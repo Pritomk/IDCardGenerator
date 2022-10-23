@@ -2,9 +2,10 @@ package com.example.idcardgenerator;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -19,20 +20,25 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.print.PrintHelper;
 
+import com.bumptech.glide.Glide;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class PrintActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_print);
+
+        Intent intent = getIntent();
+        ArrayList<CharSequence> details = intent.getCharSequenceArrayListExtra("details");
+        Log.d("pritom", ""+details);
+        Uri uri = intent.getParcelableExtra("imageUri");
+        Log.d("pritom",""+uri);
 
         checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, 1);
         checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE, 1);
@@ -44,7 +50,8 @@ public class MainActivity extends AppCompatActivity {
             Bitmap b = layout.getDrawingCache();
 
             ImageView img = findViewById(R.id.imageView);
-            img.setImageBitmap(b);
+//            img.setImageBitmap(b);
+            Glide.with(this).load(uri).into(img);
 
             doPhotoPrint(b);
 
@@ -85,12 +92,12 @@ public class MainActivity extends AppCompatActivity {
 
     // Function to check and request permission.
     public void checkPermission(String permission, int requestCode) {
-        if (ContextCompat.checkSelfPermission(MainActivity.this, permission) == PackageManager.PERMISSION_DENIED) {
+        if (ContextCompat.checkSelfPermission(PrintActivity.this, permission) == PackageManager.PERMISSION_DENIED) {
 
             // Requesting the permission
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{permission}, requestCode);
+            ActivityCompat.requestPermissions(PrintActivity.this, new String[]{permission}, requestCode);
         } else {
-            Toast.makeText(MainActivity.this, "Permission already granted", Toast.LENGTH_SHORT).show();
+            Toast.makeText(PrintActivity.this, "Permission already granted", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -109,9 +116,9 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(MainActivity.this, "Storage Permission Granted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PrintActivity.this, "Storage Permission Granted", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(MainActivity.this, "Storage Permission Denied", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PrintActivity.this, "Storage Permission Denied", Toast.LENGTH_SHORT).show();
             }
         }
     }
