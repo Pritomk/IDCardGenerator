@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">IDCardGenerator</string>
+    <string name="clg_name"><![CDATA[University of Engineering & Management]]></string>
+    <string name="clg_address">Plot No. III, B/5, New Town Rd, Action Area III, Newtown, Kolkata, West Bengal 700160</string>
     <string-array name="courses_array">
         <item>CST</item>
         <item>CSIT</item>

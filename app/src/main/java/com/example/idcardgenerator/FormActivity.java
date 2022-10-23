@@ -66,8 +66,8 @@ public class FormActivity extends AppCompatActivity implements DatePickerDialog.
 
     private void submitFunc() {
         ArrayList<CharSequence> details = new ArrayList<>();
-        details.add(enrolment.getText().toString());
         details.add(name.getText().toString());
+        details.add(enrolment.getText().toString());
         details.add(address.getText().toString());
         details.add(studentContact.getText().toString());
         details.add(emergencyContact.getText().toString());

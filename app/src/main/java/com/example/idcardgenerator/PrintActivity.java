@@ -11,6 +11,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -21,6 +22,7 @@ import androidx.core.content.ContextCompat;
 import androidx.print.PrintHelper;
 
 import com.bumptech.glide.Glide;
+import com.example.idcardgenerator.databinding.ActivityPrintBinding;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -29,10 +31,14 @@ import java.util.ArrayList;
 
 public class PrintActivity extends AppCompatActivity {
 
+    private ActivityPrintBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_print);
+
+        binding = ActivityPrintBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         Intent intent = getIntent();
         ArrayList<CharSequence> details = intent.getCharSequenceArrayListExtra("details");
@@ -40,23 +46,39 @@ public class PrintActivity extends AppCompatActivity {
         Uri uri = intent.getParcelableExtra("imageUri");
         Log.d("pritom",""+uri);
 
+
+        assignDetails(details,uri);
+
+
         checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, 1);
         checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE, 1);
 
-        Button button = findViewById(R.id.btn);
+        Button button = binding.printBtn;
         button.setOnClickListener(view -> {
-            RelativeLayout layout = findViewById(R.id.relativeLayout);
+            LinearLayout layout = binding.idCardLayout;
             layout.setDrawingCacheEnabled(true);
             Bitmap b = layout.getDrawingCache();
 
-            ImageView img = findViewById(R.id.imageView);
+//            ImageView img = findViewById(R.id.imageView);
 //            img.setImageBitmap(b);
-            Glide.with(this).load(uri).into(img);
+//            Glide.with(this).load(uri).into(img);
 
             doPhotoPrint(b);
 
         });
 
+    }
+
+    private void assignDetails(ArrayList<CharSequence> details, Uri imageUri) {
+        binding.nameTv.setText(details.get(0));
+        binding.enrolmentTv.setText(details.get(1));
+        binding.addressTv.setText(details.get(2));
+        binding.studentContactTv.setText("Student Contact: "+details.get(3));
+        binding.emergencyContactTv.setText("Emergency Contact: "+details.get(4));
+        binding.dobTv.setText("D.O.B. "+details.get(5));
+        binding.courseTv.setText("Course: "+details.get(6));
+        binding.bloodTv.setText("Blood Gr.:"+details.get(7));
+        Glide.with(this).load(imageUri).into(binding.studentPicIv);
     }
 
     private void doPhotoPrint(Bitmap bitmap) {
